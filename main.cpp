@@ -1,18 +1,24 @@
 #include <iostream>
 #include <cstring> 
 #include <cmath>
-#include "Node.h"
+#include "node.h"
 
 int convertToInt(char* num);
-int inputToInt(char* input, int* array);
-int fileToInt(char* fileName, int* array);
+void inputToInt(char* input, int* array);
+void fileToInt(char* fileName, int* array);
+void add(Node* &currRoot, int num);
+bool search(Node* currRoot, int num);
+void build(int* array, int size, Node* &root);
 
 int main() {
 	char input[200];
 	char fileName[50];
 	char forC[10];
+	char input2[20];
 	int* array = new int[100];
 	int size;
+	Node* root = NULL;
+	bool running = true;
 
 	cout << "Please enter whether you would like to input through file or console: ";
 	cin.get(forC, 10);
@@ -34,7 +40,13 @@ int main() {
 		cout << "Please enter FILE or CONSOLE." << endl;
 	}	
 
-	build(array, size);
+	build(array, size, root);
+
+	while (running) {
+	cout << "Please enter whether you would like to search, remove, insert, print, or quit: ";
+	cin.get(input2, 20);
+	cin.ignore(20, '\n');
+	
 
 	return 0;
 }
@@ -68,11 +80,6 @@ int inputToInt(char* input, int* array) { // Take the input and convert it into 
 		        arrayIndex++;
 		}
 	}
-	cout << "Original: ";
-	for (int i = 1; i < arrayIndex; i++) {
-		cout << array[i] << ' ';
-	}
-	cout << endl;
 	return arrayIndex;
 }
 
@@ -91,3 +98,44 @@ int fileToInt(char* fileName, int* array) { // File input to int array, utilizes
 		return -1;
 	}
 }	
+
+void add(Node* &currRoot, int num) {
+	if (!currRoot) { 
+		currRoot = new Node(num);
+	}
+	else if (num < currRoot -> getData()) {
+		add(currRoot -> getLeft(), num);
+	}
+	else if (num > currRoot -> getData()) {
+		add(currRoot -> getRight(), num);	
+	}
+}
+
+bool search(Node* currRoot, int num) {
+	if (!currRoot) {
+		return false;
+	}
+	else if (currRoot -> getData() == num) {
+		return true;
+	}
+	else if (currRoot -> getData() < num) {
+		return search(currRoot -> getLeft(), num);
+	}
+	else if (currRoot -> getData() > num) {
+		return search(currRoot -> getRight(), num);
+	}
+}
+
+bool remove(Node* &currRoot, int num) {
+	if (!currRoot) {
+		return false;
+	}
+	else if (num < currRoot -> data) {
+		remove(currRoot -> getLeft(), num);
+	
+
+void build(int* array, int size, Node* &root) {
+	for (int i = 0; i < size; i++) {
+		add(root, array[i]);
+	}
+}			
