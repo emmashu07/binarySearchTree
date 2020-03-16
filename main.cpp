@@ -126,12 +126,20 @@ bool search(Node* currRoot, int num) {
 	}
 }
 
-bool remove(Node* &currRoot, int num) {
+bool remove(Node* &currRoot, int num, Node* root) {
 	if (!currRoot) {
 		return false;
 	}
-	else if (num < currRoot -> data) {
-		remove(currRoot -> getLeft(), num);
+	else if (num < currRoot -> getData()) {
+		return remove(currRoot -> getLeft(), num, root);
+	}
+	else if (num > currRoot -> getData()) {
+		return remove(currRoot -> getRight(), num, root);
+	}
+	else if (num == currRoot -> getData()) {
+		return true;
+		removeNode(currRoot, root);
+	}
 	
 
 void build(int* array, int size, Node* &root) {
