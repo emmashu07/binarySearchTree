@@ -21,6 +21,7 @@ void build(int* array, int size, Node* &root);
 bool remove(Node* &currRoot, int num); 
 void removeNode(Node* &currRoot);
 void display(Node* currRoot);
+Node*& largest(Node* root);
 
 int main() {
 	char input[200];
@@ -185,28 +186,52 @@ bool search(Node* currRoot, int num) {
 	}
 }
 
+void largest(Node* root, Node* &large) {
+	if (!(root -> right -> right)) {
+		large = root;
+	}
+	else {
+		largest(root -> right, large);
+	}
+}
+
 void removeNode(Node* &node) {
 	if (!(node -> left) && !(node -> right)) {
 		delete node;
 		node = NULL;
 	}
-	else if (node -> left) {
+	else if (!(node -> left)) {
 		Node* temp = node -> right;
 		delete node;
 		node = temp;
 	}
-	else if (node -> right) {
+	else if (!(node -> right)) {
 		Node* temp = node -> left;
 		delete node;
 		node = temp;
 	}
 	else {
 		Node* temp = node -> left;
-		while (temp -> right) {
-			temp = temp -> right;
+		Node* large;
+		if (!(temp -> right)) {
+			node -> data = temp -> data;
+			Node* temp2 = temp;
+			node -> left = temp -> left;
+			delete temp2;
 		}
-		delete node;
-		node = temp;
+		else if (!(temp -> right -> right)) {
+			node -> data = temp -> right -> data;
+			Node* temp2 = temp -> right;
+			temp -> right = temp -> right -> left;
+			delete temp2;
+		}
+		else {
+			largest(temp, large);
+			node -> data = large -> right -> data;
+			Node* temp2 = large -> right;
+			large -> right = large -> right -> left;
+			delete temp2;
+		}
 	}
 }
 
@@ -221,8 +246,8 @@ bool remove(Node* &currRoot, int num) {
 		return remove(currRoot -> right, num);
 	}
 	else if (num == currRoot -> data) {
-		return true;
 		removeNode(currRoot);
+		return true;
 	}
 }
 	
