@@ -1,3 +1,8 @@
+/*
+ * Emma Shu, 3/17/2020: Build a binary search tree based on the input that 
+ * can print, search, delete, and add.
+ */
+
 #include <iostream>
 #include <cstring> 
 #include <cmath>
@@ -16,7 +21,7 @@ int inputToInt(char* input, int* array);
 int fileToInt(char* fileName, int* array);
 void add(Node* &currRoot, int num);
 bool search(Node* currRoot, int num);
-//void print(Node* currRoot, int tabNum);
+void print(Node* currRoot, int tabNum);
 void build(int* array, int size, Node* &root);
 bool remove(Node* &currRoot, int num); 
 void removeNode(Node* &currRoot);
@@ -98,7 +103,8 @@ int main() {
 			}
 		}	
 		else if (strcmp(input2, "PRINT") == 0) {
-			//print(root, 0);
+			print(root, 0);
+			cout << "Inorder traversal: ";
 			display(root);
 			cout << endl;
 		}
@@ -158,7 +164,7 @@ int fileToInt(char* fileName, int* array) { // File input to int array, utilizes
 	}
 }	
 
-void add(Node* &currRoot, int num) {
+void add(Node* &currRoot, int num) { // Add a node based on the value.
 	if (!currRoot) { 
 		currRoot = new Node();
 		currRoot -> data = num;
@@ -171,7 +177,7 @@ void add(Node* &currRoot, int num) {
 	}
 }
 
-bool search(Node* currRoot, int num) {
+bool search(Node* currRoot, int num) { // Return whether or not value is in tree.
 	if (!currRoot) {
 		return false;
 	}
@@ -186,7 +192,7 @@ bool search(Node* currRoot, int num) {
 	}
 }
 
-void largest(Node* root, Node* &large) {
+void largest(Node* root, Node* &large) { // Used in removeNode, returns second largest node based off root.
 	if (!(root -> right -> right)) {
 		large = root;
 	}
@@ -195,7 +201,7 @@ void largest(Node* root, Node* &large) {
 	}
 }
 
-void removeNode(Node* &node) {
+void removeNode(Node* &node) { // Removes node based off how many children the node has.
 	if (!(node -> left) && !(node -> right)) {
 		delete node;
 		node = NULL;
@@ -210,7 +216,7 @@ void removeNode(Node* &node) {
 		delete node;
 		node = temp;
 	}
-	else {
+	else { // Has two children, remove based off how many right children.
 		Node* temp = node -> left;
 		Node* large;
 		if (!(temp -> right)) {
@@ -235,7 +241,7 @@ void removeNode(Node* &node) {
 	}
 }
 
-bool remove(Node* &currRoot, int num) {
+bool remove(Node* &currRoot, int num) { // Find the correct node to remove.
 	if (!currRoot) {
 		return false;
 	}
@@ -252,15 +258,15 @@ bool remove(Node* &currRoot, int num) {
 }
 	
 
-void build(int* array, int size, Node* &root) {
+void build(int* array, int size, Node* &root) { // Build the tree based off user input.
 	for (int i = 0; i < size; i++) {
 		add(root, array[i]);
 	}
 }
 
-/*void print(Node* currRoot, int tabNum) {
-	if (currRoot -> left) {
-		print(currRoot -> left, tabNum+1);
+void print(Node* currRoot, int tabNum) { // Print the tree.
+	if (currRoot -> right) {
+		print(currRoot -> right, tabNum+1);
 	}
 	int i = 0;
 	while (i < tabNum) {
@@ -268,13 +274,13 @@ void build(int* array, int size, Node* &root) {
 		i++;
 	}
 	cout << currRoot -> data << endl;
-	if (currRoot -> right) {
-		print(currRoot -> right, tabNum+1);
+	if (currRoot -> left) {
+		print(currRoot -> left, tabNum+1);
 	}
 	
-}*/
+}
 
-void display(Node* currRoot) {
+void display(Node* currRoot) { // An inorder traversal of the tree.
 	if (currRoot) {
 		display(currRoot -> left);
 		cout << currRoot -> data << ' ';
