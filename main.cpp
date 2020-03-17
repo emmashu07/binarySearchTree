@@ -1,14 +1,26 @@
 #include <iostream>
 #include <cstring> 
 #include <cmath>
-#include "node.h"
+#include <fstream>
+
+using namespace std;
+
+struct Node {
+	int data;
+	Node* left;
+	Node* right;
+};
 
 int convertToInt(char* num);
-void inputToInt(char* input, int* array);
-void fileToInt(char* fileName, int* array);
+int inputToInt(char* input, int* array);
+int fileToInt(char* fileName, int* array);
 void add(Node* &currRoot, int num);
 bool search(Node* currRoot, int num);
+//void print(Node* currRoot, int tabNum);
 void build(int* array, int size, Node* &root);
+bool remove(Node* &currRoot, int num); 
+void removeNode(Node* &currRoot);
+void display(Node* currRoot);
 
 int main() {
 	char input[200];
@@ -43,9 +55,56 @@ int main() {
 	build(array, size, root);
 
 	while (running) {
-	cout << "Please enter whether you would like to search, remove, insert, print, or quit: ";
-	cin.get(input2, 20);
-	cin.ignore(20, '\n');
+		cout << "Please enter whether you would like to search, remove, insert, print, or quit: ";
+		cin.get(input2, 20);
+		cin.ignore(20, '\n');
+		
+		if (strcmp(input2, "INSERT") == 0) {
+			int num;
+			cout << "Please enter a number: ";
+			cin >> num;
+			cin.ignore(20, '\n');
+			add(root, num);
+		}
+		else if (strcmp(input2, "SEARCH") == 0) {
+			bool in;
+			int num;
+			cout << "Please enter a number: ";
+			cin >> num;
+			cout << endl;
+			cin.ignore(20, '\n');
+			in = search(root, num);
+			if (in) {
+				cout << "The number is in the tree." << endl;
+			}
+			else {
+				cout << "The number is not in the tree." << endl;
+			}	
+		}
+		else if (strcmp(input2, "REMOVE") == 0) {
+			bool in;
+			int num;
+			cout << "Please enter a number: ";
+			cin >> num;
+			cout << endl;
+			cin.ignore(20, '\n');
+			in = remove(root, num);
+			if (in) {
+				cout << "Deleted." << endl;
+			}
+			else {
+				cout << "The number is not in the tree." << endl;
+			}
+		}	
+		else if (strcmp(input2, "PRINT") == 0) {
+			//print(root, 0);
+			display(root);
+			cout << endl;
+		}
+		else if (strcmp(input2, "QUIT") == 0) {
+			running = false;
+		}
+	}
 	
 
 	return 0;
@@ -62,8 +121,7 @@ int convertToInt(char* num) { // Using a char array, make an int.
 }
 
 int inputToInt(char* input, int* array) { // Take the input and convert it into an int array.
-	int arrayIndex = 1;
-	array[0] = -1;
+	int arrayIndex = 0;
 	for (int i = 0; i < strlen(input); i++) {
 		if (!isspace(input[i]) && isdigit(input[i])) {
 			int index = 0;
@@ -101,13 +159,14 @@ int fileToInt(char* fileName, int* array) { // File input to int array, utilizes
 
 void add(Node* &currRoot, int num) {
 	if (!currRoot) { 
-		currRoot = new Node(num);
+		currRoot = new Node();
+		currRoot -> data = num;
 	}
-	else if (num < currRoot -> getData()) {
-		add(currRoot -> getLeft(), num);
+	else if (num < currRoot -> data) {
+		add(currRoot -> left, num);
 	}
-	else if (num > currRoot -> getData()) {
-		add(currRoot -> getRight(), num);	
+	else if (num > currRoot -> data) {
+		add(currRoot -> right, num);	
 	}
 }
 
@@ -115,35 +174,85 @@ bool search(Node* currRoot, int num) {
 	if (!currRoot) {
 		return false;
 	}
-	else if (currRoot -> getData() == num) {
+	else if (currRoot -> data == num) {
 		return true;
 	}
-	else if (currRoot -> getData() < num) {
-		return search(currRoot -> getLeft(), num);
+	else if (currRoot -> data > num) {
+		return search(currRoot -> left, num);
 	}
-	else if (currRoot -> getData() > num) {
-		return search(currRoot -> getRight(), num);
+	else if (currRoot -> data < num) {
+		return search(currRoot -> right, num);
 	}
 }
 
-bool remove(Node* &currRoot, int num, Node* root) {
+void removeNode(Node* &node) {
+	if (!(node -> left) && !(node -> right)) {
+		delete node;
+	}
+	else if (node -> left) {
+		Node* temp = node -> right;
+		delete node;
+		node = temp;
+	}
+	else if (node -> right) {
+		Node* temp = node -> left;
+		delete node;
+		node = temp;
+	}
+	else {
+		Node* temp = node -> left;
+		while (temp -> right) {
+			temp = temp -> right;
+		}
+		delete node;
+		node = temp;
+	}
+}
+
+bool remove(Node* &currRoot, int num) {
 	if (!currRoot) {
 		return false;
 	}
-	else if (num < currRoot -> getData()) {
-		return remove(currRoot -> getLeft(), num, root);
+	else if (num < currRoot -> data) {
+		return remove(currRoot -> left, num);
 	}
-	else if (num > currRoot -> getData()) {
-		return remove(currRoot -> getRight(), num, root);
+	else if (num > currRoot -> data) {
+		return remove(currRoot -> right, num);
 	}
-	else if (num == currRoot -> getData()) {
+	else if (num == currRoot -> data) {
 		return true;
-		removeNode(currRoot, root);
+		removeNode(currRoot);
 	}
+}
 	
 
 void build(int* array, int size, Node* &root) {
 	for (int i = 0; i < size; i++) {
 		add(root, array[i]);
 	}
-}			
+}
+
+/*void print(Node* currRoot, int tabNum) {
+	if (currRoot -> left) {
+		print(currRoot -> left, tabNum+1);
+	}
+	int i = 0;
+	while (i < tabNum) {
+		cout << '\t';
+		i++;
+	}
+	cout << currRoot -> data << endl;
+	if (currRoot -> right) {
+		print(currRoot -> right, tabNum+1);
+	}
+	
+}*/
+
+void display(Node* currRoot) {
+	if (currRoot) {
+		display(currRoot -> left);
+		cout << currRoot -> data << ' ';
+		display(currRoot -> right);
+	}
+}
+

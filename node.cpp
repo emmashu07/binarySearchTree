@@ -1,7 +1,7 @@
 #include "node.h"
 
 Node::Node(int data) {
-	this.data = data;
+	this -> data = data;
 	left = NULL;
 	right = NULL;
 }
@@ -10,7 +10,7 @@ Node::~Node() {
 }
 
 void Node::setData(int data) {
-	this.data = data;
+	this -> data = data;
 }
 
 int Node::getData() {
@@ -18,7 +18,7 @@ int Node::getData() {
 }
 
 void Node::setLeft(Node* left) {
-	this.left = left;
+	this -> left = left;
 }
 
 Node* Node::getLeft() {
@@ -26,7 +26,7 @@ Node* Node::getLeft() {
 }
 
 void Node::setRight(Node* right) {
-	this.right = right;
+	this -> right = right;
 }
 
 Node* Node::getRight() {
