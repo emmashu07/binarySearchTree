@@ -188,6 +188,7 @@ bool search(Node* currRoot, int num) {
 void removeNode(Node* &node) {
 	if (!(node -> left) && !(node -> right)) {
 		delete node;
+		node = NULL;
 	}
 	else if (node -> left) {
 		Node* temp = node -> right;
